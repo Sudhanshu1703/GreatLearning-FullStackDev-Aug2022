@@ -74,24 +74,6 @@ public Employee(String FName, String LName){
       this.LName = LName;
 }
 
-public Integer checkDeptInputVal(int inputVal)
-{
-    System.out.println("On Method Call variable and Condition inputVal=" + inputVal + " and Condition evaluation is = " + (inputVal >=1 && inputVal <=4));
-    if(inputVal >=1 && inputVal <=4){
-        System.out.println("If case: Your Dept is : " + inputVal);
-        System.out.println("Dear " + FName + " your generated credentials are as follows");
-        System.out.println("inputVal=" + inputVal + " and Condition evaluation is = " + (inputVal >=1 && inputVal <=4));        
-        //System.out.println("Email ---> : " + generateEmail(FName,LName,inputVal));
-        //System.out.println("Password ---> : " + generatePassword());
-
-    }else{
-        System.out.println("Else case: Invalid value entered. Plz enter a number between 1-4 corresponsing your department from the above list displayed");
-        inputVal = Integer.parseInt(System.console().readLine("\nStep 3: Enter you Dept. No. from the above list : "));  
-        checkDeptInputVal(inputVal);
-    }
-  return inputVal;
-}
-
 public String validateNameVal(Scanner sc)
 {
     while (!sc.hasNext("[A-Za-z]+")) {
@@ -136,7 +118,6 @@ public void processFinalOutput(int inputVal)
     System.out.println(objEmp.interaction()); // Prints the Deparment values on the console
     Scanner scan = new Scanner (System.in); // read value from the console
     inputVal = objEmp.validateDeptInputVal(scan); // Validate's the input value from the console
-    //objEmp.checkDeptInputVal(inputVal); // Gives final output and displays the generated credentials.
     objEmp.processFinalOutput(inputVal);
   }
 
