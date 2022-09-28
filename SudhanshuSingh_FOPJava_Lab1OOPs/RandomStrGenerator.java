@@ -15,8 +15,7 @@ class CredentialService{
   static final String doubleLineSeparator = "\n\n";
   enum Department { Technical, Admin, HumanResource, Legal }
 
-  public String interaction()
-  {
+  public String interaction(){
     String strConsoleInterface = tabsHR + " *******************************************************************************\n";
     strConsoleInterface += tabsCaption + "Greetings and welcome to " + strCompName + "\n";
     strConsoleInterface += tabsHR + " *******************************************************************************\n";
@@ -32,6 +31,7 @@ class CredentialService{
 
     return strConsoleInterface;
   }
+
   public String generatePassword() throws IOException  {
       Random rand = new Random();
 
@@ -45,11 +45,16 @@ class CredentialService{
       str = str.matches(".*[0-9].*") ? str : new StringBuilder(str).insert(str.length()-5, "8").toString();
 
       return str; // returns alphanumeric passwords with a capital letter and a special character
-
   }
 
   public String generateEmail (String FName, String LName, int Dept) {
-    return (FName+LName+String.format(strCompEmailDomain, Department.values()[Dept-1])).toLowerCase();
+    //return (FName+LName+String.format(strCompEmailDomain, Department.values()[Dept-1])).toLowerCase();
+    if(Dept<=4 & Dept>0) {
+        String email = (FName + LName + String.format(strCompEmailDomain, Department.values()[Dept - 1])).toLowerCase();
+        return email;
+    } else {
+        return "Please select a valid department name";
+    }
   }
 }
 
@@ -68,14 +73,12 @@ public Employee(){
       System.out.println("LName validated : " + LName);
 }
 
-
 public Employee(String FName, String LName){
       this.FName = FName;
       this.LName = LName;
 }
 
-public String validateNameVal(Scanner sc)
-{
+public String validateNameVal(Scanner sc){
     while (!sc.hasNext("[A-Za-z]+")) {
         System.out.println("\nNope, Invalid value! Please enter aplabets only.");
         sc.next();
@@ -86,30 +89,86 @@ public String validateNameVal(Scanner sc)
 }
 
 public Integer validateDeptInputVal(Scanner scan){
-          while (!scan.hasNextInt()) {
-              System.out.println(tabsCaption + "Invalid value entered. Plz enter a number between 1-4 corresponsing your department from the above list displayed");
-              scan.next();
-          }
-         return scan.nextInt();
+  Integer tmp = 0;
+  while (!scan.hasNextInt()) {
+        System.out.println(tabsCaption + "Invalid value entered. Plz enter a number between 1-4 corresponsing your department from the above list displayed");
+        scan.next();
+  }
+
+  return scan.nextInt();
 }
 
-public void processFinalOutput(int inputVal)
-{
+public Integer validateDeptInputVal1(Scanner scan){
+  Integer tmp = 0;
+  while (scan.hasNextInt() && !(scan.nextInt()>0 && scan.nextInt()<=4)) {
+        System.out.println(tabsCaption + "Invalid value entered. Plz enter a number between 1-4 corresponsing your department from the above list displayed");
+        scan.next();
+  }
+
+  return scan.nextInt();
+}
+
+public Integer validateDeptInputVal2(Scanner scan){
+  while (scan.hasNextInt() && (scan.nextInt()>0 && scan.nextInt()<=4)) {
+        //System.out.println(tabsCaption + "Invalid value entered. Plz enter a number between 1-4 corresponsing your department from the above list displayed");
+        scan.next();
+  }
+  return scan.nextInt();
+}
+
+public void processFinalOutput_Depricated(int inputVal){
 
     System.out.println(doubleLineSeparator + tabsHR + " *******************************************************************************");
     System.out.println(tabsCaption + "Dear " + FName + " your generated credentials are as follows");
     System.out.println(tabsHR + " *******************************************************************************\n");
     System.out.println(tabsCaption + "Email ---> : " + generateEmail(FName,LName,inputVal));
     System.out.println("\n");
+
     try{
         System.out.println(tabsCaption + "Password ---> : " + generatePassword());
     } catch(Exception ex) {
-      System.out.println("Error in Password generation : " + ex);
+        System.out.println("Error in Password generation : " + ex);
     }
     System.out.println(doubleLineSeparator + tabsHR + " *******************************************************************************");
 }
 
- public static void main(String[] args){
+public void processFinalOutput(int inputVal){
+
+    if(inputVal >0 && inputVal <=4){ // If the Dept value entered by user is between 1 to 4 then this condition will validate
+        System.out.println(doubleLineSeparator + tabsHR + " *******************************************************************************");
+        System.out.println(tabsCaption + "Dear " + FName + " your generated credentials are as follows");
+        System.out.println(tabsHR + " *******************************************************************************\n");
+        System.out.println(tabsCaption + "Email ---> : " + generateEmail(FName,LName,inputVal));
+        System.out.println("\n");
+
+        try{
+            System.out.println(tabsCaption + "Password ---> : " + generatePassword());
+        } catch(Exception ex) {
+          System.out.println("Error in Password generation : " + ex);
+        }
+        System.out.println(doubleLineSeparator + tabsHR + " *******************************************************************************");
+
+      } else{ // If the Dept value entered by user is not between 1 to 4 then user will be prompted to enter a correcvt value.
+
+        System.out.println(tabsCaption + "Invalid value entered. Plz enter a number between 1-4 corresponsing your department from the above list displayed");
+        Scanner scan = new Scanner (System.in); // read value from the console
+        inputVal = validateDeptInputVal(scan); // Validate's the input value from the console
+        processFinalOutput(inputVal);
+      }
+}
+
+public Integer getDepartmentProcessOutput(){
+  int inputVal = 0;
+  Scanner scan = new Scanner (System.in); // read value from the console
+
+  inputVal = validateDeptInputVal(scan); // Validate's the input value from the console
+  if(!(inputVal >0 && inputVal<=4)){
+    getDepartmentProcessOutput();
+  }
+    return inputVal;
+}
+
+public static void main(String[] args){
     int inputVal = 0;
     String generatedPwd = "";
     String generatedEmail = "";
